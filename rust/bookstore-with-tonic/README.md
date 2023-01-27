@@ -4,25 +4,25 @@
 
 ### For Ubuntu
 
-```sh
+```bash
 sudo apt install -y protobuf-compiler
 rustup update
 ```
 
 ## How to build
 
-```sh
+```bash
 cargo build
 ```
 
 ## How to run server process
 
-```sh
+```bash
 cargo run --bin server
 ```
 
 ## How to run client procoess
 
-```sh
+```bash
 cargo run --bin client
 ```
