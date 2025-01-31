@@ -1,27 +1,22 @@
-extern crate postgres;
-extern crate dotenv;
-
 extern crate chrono;
+extern crate dotenv;
+extern crate postgres;
 
 pub mod user {
     tonic::include_proto!("user");
 }
 
-use tonic::{transport::Server};
-
-use user::{
-    user_service_server::{UserServiceServer},
-};
-
-extern crate uuid;
+use tonic::transport::Server;
+use user::user_service_server::UserServiceServer;
 
 extern crate console;
+extern crate uuid;
+
+use crate::service::User;
 use console::Style;
 
 mod db_connection;
-
 mod service;
-use crate::service::User;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -38,4 +33,3 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-

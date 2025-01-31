@@ -1,23 +1,23 @@
-use chrono::*;
-use uuid::Uuid;
-
 use crate::db_connection::establish_connection;
-
+use crate::user::user_service_server::UserService;
+use crate::user::{CreateUserReply, CreateUserRequest, DeleteUserReply, Empty, UpdateUserReply, UpdateUserRequest, UserReply, UserRequest, Users};
+use chrono::*;
 use tonic::{Request, Response, Status};
-
-use crate::user::{
-    user_service_server::UserService, CreateUserReply, CreateUserRequest, DeleteUserReply, Empty, UpdateUserReply,
-    UpdateUserRequest, UserReply, UserRequest, Users,
-};
+use uuid::Uuid;
 
 #[derive(Default)]
 pub struct User {}
 
 #[tonic::async_trait]
 impl UserService for User {
-    async fn get_user(&self, request: Request<UserRequest>) -> Result<Response<UserReply>, Status> {
+    async fn get_user(
+        &self,
+        request: Request<UserRequest>,
+    ) -> Result<Response<UserReply>, Status> {
         println!("Got a request: {:#?}", &request);
-        let UserRequest { id } = &request.into_inner();
+        let UserRequest {
+            id,
+        } = &request.into_inner();
 
         let conn = establish_connection();
 
@@ -30,16 +30,19 @@ impl UserService for User {
         let date_of_birth: NaiveDate = row.get(3);
 
         let reply = UserReply {
-            id: row.get(0),
-            first_name: row.get(1),
-            last_name: row.get(2),
+            id:            row.get(0),
+            first_name:    row.get(1),
+            last_name:     row.get(2),
             date_of_birth: date_of_birth.to_string(),
         };
 
         Ok(Response::new(reply))
     }
 
-    async fn list_users(&self, request: Request<Empty>) -> Result<Response<Users>, Status> {
+    async fn list_users(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<Users>, Status> {
         println!("Got a request: {:#?}", &request);
         let conn = establish_connection();
         let mut v: Vec<UserReply> = Vec::new();
@@ -47,15 +50,17 @@ impl UserService for User {
         for row in &conn.query("SELECT * FROM users", &[]).unwrap() {
             let date_of_birth: NaiveDate = row.get(3);
             let user = UserReply {
-                id: row.get(0),
-                first_name: row.get(1),
-                last_name: row.get(2),
+                id:            row.get(0),
+                first_name:    row.get(1),
+                last_name:     row.get(2),
                 date_of_birth: date_of_birth.to_string(),
             };
             v.push(user);
         }
 
-        let reply = Users { users: v };
+        let reply = Users {
+            users: v
+        };
 
         Ok(Response::new(reply))
     }
@@ -71,7 +76,8 @@ impl UserService for User {
             last_name,
             date_of_birth,
         } = &request.into_inner();
-        let serialize_date_of_birth = NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap();
+        let serialize_date_of_birth =
+            NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap();
 
         let conn = establish_connection();
         let number_of_rows_affected = &conn.execute(
@@ -87,10 +93,7 @@ impl UserService for User {
 
         let reply = if number_of_rows_affected == &(0 as u64) {
             CreateUserReply {
-                message: format!(
-                    "Fail to create user with id {}.",
-                    &user_id
-                ),
+                message: format!("Fail to create user with id {}.", &user_id),
             }
         } else {
             CreateUserReply {
@@ -116,7 +119,8 @@ impl UserService for User {
             date_of_birth,
         } = &request.into_inner();
 
-        let serialize_date_of_birth = NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap(); // String to Date
+        let serialize_date_of_birth =
+            NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap(); // String to Date
 
         let conn = establish_connection();
 
@@ -138,7 +142,10 @@ impl UserService for User {
             }
         } else {
             UpdateUserReply {
-                message: format!("Update {} user with id {}.", &number_of_rows_affected, &id),
+                message: format!(
+                    "Update {} user with id {}.",
+                    &number_of_rows_affected, &id
+                ),
             }
         };
 
@@ -150,7 +157,9 @@ impl UserService for User {
         request: Request<UserRequest>,
     ) -> Result<Response<DeleteUserReply>, Status> {
         println!("Got a request: {:#?}", &request);
-        let UserRequest { id } = &request.into_inner();
+        let UserRequest {
+            id,
+        } = &request.into_inner();
         let conn = establish_connection();
 
         let number_of_rows_affected = &conn
@@ -180,7 +189,10 @@ impl UserService for User {
         let rows = &conn.query("DELETE FROM users", &[]).unwrap();
 
         let reply = DeleteUserReply {
-            message: format!("Remove {} user data from the database.", rows.len()),
+            message: format!(
+                "Remove {} user data from the database.",
+                rows.len()
+            ),
         };
 
         Ok(Response::new(reply))

@@ -1,7 +1,7 @@
-use tonic::{transport::Server, Request, Response, Status};
-
 use my_book_store::book_store_server::{BookStore, BookStoreServer};
 use my_book_store::{GetBookRequest, GetBookResponse};
+use tonic::transport::Server;
+use tonic::{Request, Response, Status};
 
 pub mod my_book_store {
     tonic::include_proto!("bookstore");
@@ -14,15 +14,15 @@ pub struct MyBookStore {}
 impl BookStore for MyBookStore {
     async fn get_book(
         &self,
-        request: Request<GetBookRequest>
+        request: Request<GetBookRequest>,
     ) -> Result<Response<GetBookResponse>, Status> {
         println!("Request from: {:?}", request.remote_addr());
 
         let response = my_book_store::GetBookResponse {
-            id: request.into_inner().id,
+            id:     request.into_inner().id,
             author: "Peter".to_owned(),
-            name: "Zero to One".to_owned(),
-            year: 2014,
+            name:   "Zero to One".to_owned(),
+            year:   2014,
         };
 
         Ok(Response::new(response))
@@ -36,6 +36,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("BookStore server listening on {}", addr);
 
-    Server::builder().add_service(BookStoreServer::new(bookstore)).serve(addr).await?;
+    Server::builder()
+        .add_service(BookStoreServer::new(bookstore))
+        .serve(addr)
+        .await?;
     Ok(())
 }

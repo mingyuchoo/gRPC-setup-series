@@ -10,9 +10,9 @@ CREATE TABLE users (
     date_of_birth Date NOT NULL
 );
 
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('1', '1', '1', '2022-01-01');
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('2', '2', '2', '2022-11-25');
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('3', '3', '3', '2022-11-26');
+INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('1', '1', '1', '2025-01-01');
+INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('2', '2', '2', '2025-01-25');
+INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('3', '3', '3', '2025-01-26');
 ```
 
 ## References

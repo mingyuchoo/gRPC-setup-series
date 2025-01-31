@@ -1,7 +1,7 @@
-use tonic::{transport::Server, Request, Response, Status};
-
 use hello_world::greeting_server::{Greeting, GreetingServer};
 use hello_world::{HelloRequest, HelloResponse};
+use tonic::transport::Server;
+use tonic::{Request, Response, Status};
 
 pub mod hello_world {
     tonic::include_proto!("greeter");
@@ -14,7 +14,7 @@ pub struct MyGreeting {}
 impl Greeting for MyGreeting {
     async fn say_hello(
         &self,
-        request: Request<HelloRequest>
+        request: Request<HelloRequest>,
     ) -> Result<Response<HelloResponse>, Status> {
         println!("Got a request: {:?}", request);
 
@@ -31,6 +31,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
     let greeter = MyGreeting::default();
 
-    Server::builder().add_service(GreetingServer::new(greeter)).serve(addr).await?;
+    Server::builder()
+        .add_service(GreetingServer::new(greeter))
+        .serve(addr)
+        .await?;
     Ok(())
 }
