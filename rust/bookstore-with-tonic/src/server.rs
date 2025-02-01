@@ -7,6 +7,21 @@ pub mod my_book_store {
     tonic::include_proto!("bookstore");
 }
 
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = "[::1]:50051".parse().unwrap();
+    let bookstore = MyBookStore::default();
+
+    println!("BookStore server listening on {}", addr);
+
+    Server::builder()
+        .add_service(BookStoreServer::new(bookstore))
+        .serve(addr)
+        .await?;
+
+    Ok(())
+}
+
 #[derive(Debug, Default)]
 pub struct MyBookStore {}
 
@@ -29,18 +44,4 @@ impl BookStore for MyBookStore {
 
         Ok(Response::new(response))
     }
-}
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse().unwrap();
-    let bookstore = MyBookStore::default();
-
-    println!("BookStore server listening on {}", addr);
-
-    Server::builder()
-        .add_service(BookStoreServer::new(bookstore))
-        .serve(addr)
-        .await?;
-    Ok(())
 }
