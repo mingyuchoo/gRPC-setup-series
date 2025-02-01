@@ -1,11 +1,9 @@
-use hello_world::greeting_server::{Greeting, GreetingServer};
-use hello_world::{HelloRequest, HelloResponse};
 use tonic::transport::Server;
 use tonic::{Request, Response, Status};
 
-pub mod hello_world {
-    tonic::include_proto!("greeter");
-}
+mod hello_world;
+use hello_world::greeting_server::{Greeting, GreetingServer};
+use hello_world::{HelloRequest, HelloResponse};
 
 #[derive(Debug, Default)]
 pub struct MyGreeting {}
