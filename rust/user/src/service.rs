@@ -1,4 +1,3 @@
-// service.rs
 use crate::db_connection::establish_connection;
 use crate::user::user_service_server::UserService;
 use crate::user::{CreateUserReply, CreateUserRequest, DeleteUserReply, Empty, UpdateUserReply, UpdateUserRequest, UserReply, UserRequest, Users};
