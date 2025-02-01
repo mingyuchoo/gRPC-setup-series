@@ -3,6 +3,7 @@ pub struct GetBookRequest {
     #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetBookResponse {
     #[prost(string, tag = "1")]
@@ -14,15 +15,18 @@ pub struct GetBookResponse {
     #[prost(int32, tag = "4")]
     pub year:   i32,
 }
+
 /// Generated client implementations.
 pub mod bookstore_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+
     #[derive(Debug, Clone)]
     pub struct BookStoreClient<T> {
         inner: tonic::client::Grpc<T>,
     }
+
     impl BookStoreClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
@@ -34,6 +38,7 @@ pub mod bookstore_client {
             Ok(Self::new(conn))
         }
     }
+
     impl<T> BookStoreClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
@@ -120,10 +125,12 @@ pub mod bookstore_client {
         }
     }
 }
+
 /// Generated server implementations.
 pub mod bookstore_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
+
     /// Generated trait containing gRPC methods that should be implemented for
     /// use with BookStoreServer.
     #[async_trait]
@@ -133,13 +140,16 @@ pub mod bookstore_server {
             request: tonic::Request<super::GetBookRequest>,
         ) -> Result<tonic::Response<super::GetBookResponse>, tonic::Status>;
     }
+
     #[derive(Debug)]
     pub struct BookStoreServer<T: BookStore> {
         inner:                        _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings:   EnabledCompressionEncodings,
     }
+
     struct _Inner<T>(Arc<T>);
+
     impl<T: BookStore> BookStoreServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
@@ -185,6 +195,7 @@ pub mod bookstore_server {
             self
         }
     }
+
     impl<T, B> tonic::codegen::Service<http::Request<B>> for BookStoreServer<T>
     where
         T: BookStore,
@@ -258,6 +269,7 @@ pub mod bookstore_server {
             }
         }
     }
+
     impl<T: BookStore> Clone for BookStoreServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
@@ -268,16 +280,19 @@ pub mod bookstore_server {
             }
         }
     }
+
     impl<T: BookStore> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone())
         }
     }
+
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{:?}", self.0)
         }
     }
+
     impl<T: BookStore> tonic::server::NamedService for BookStoreServer<T> {
         const NAME: &'static str = "bookstore.BookStore";
     }
