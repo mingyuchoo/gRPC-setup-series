@@ -1,4 +1,4 @@
-# Hello with Tonic for gRPC
+# bookstore-with-tonic
 
 ## Prerequisite
 

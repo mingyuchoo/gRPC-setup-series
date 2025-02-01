@@ -19,7 +19,10 @@ struct BookResponse {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define the warp filter for the GET /book route
     let book_route =
-        warp::path!("book" / String).and_then(|id: String| fetch_book(id));
+        warp::path!("book" / String).and_then(|id: String| async move {
+            println!("Received request URL: /book/{}", id);
+            fetch_book(id).await
+        });
 
     // Start the warp server
     warp::serve(book_route).run(([127, 0, 0, 1], 3030)).await;
@@ -45,6 +48,8 @@ async fn fetch_book(id: String) -> Result<impl warp::Reply, warp::Rejection> {
     })?;
 
     let book = response.into_inner();
+    println!("Received response from Proto server: {:?}", book);
+
     let book_response = BookResponse {
         id:     book.id,
         name:   book.name,

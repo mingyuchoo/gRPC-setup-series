@@ -22,8 +22,10 @@ impl BookStore for MyBookStore {
             id:     request.into_inner().id,
             author: "Peter".to_owned(),
             name:   "Zero to One".to_owned(),
-            year:   2014,
+            year:   2025,
         };
+
+        println!("Response to: {:?}", response);
 
         Ok(Response::new(response))
     }
