@@ -1,7 +1,7 @@
+// service.rs
 use crate::db_connection::establish_connection;
 use crate::user::user_service_server::UserService;
 use crate::user::{CreateUserReply, CreateUserRequest, DeleteUserReply, Empty, UpdateUserReply, UpdateUserRequest, UserReply, UserRequest, Users};
-use chrono::*;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
 
@@ -19,21 +19,25 @@ impl UserService for User {
             id,
         } = &request.into_inner();
 
-        let conn = establish_connection();
+        let mut conn = establish_connection();
 
-        let rows = &conn
+        let rows = conn
             .query("SELECT * FROM users WHERE id = $1", &[&id])
             .unwrap();
 
-        let row = rows.get(0);
+        if rows.is_empty() {
+            return Err(Status::not_found("User not found"));
+        }
 
-        let date_of_birth: NaiveDate = row.get(3);
+        let row = rows.get(0).expect("Row should exist");
+
+        let date_of_birth: String = row.get(3);
 
         let reply = UserReply {
-            id:            row.get(0),
-            first_name:    row.get(1),
-            last_name:     row.get(2),
-            date_of_birth: date_of_birth.to_string(),
+            id: row.get(0),
+            first_name: row.get(1),
+            last_name: row.get(2),
+            date_of_birth,
         };
 
         Ok(Response::new(reply))
@@ -44,16 +48,16 @@ impl UserService for User {
         request: Request<Empty>,
     ) -> Result<Response<Users>, Status> {
         println!("Got a request: {:#?}", &request);
-        let conn = establish_connection();
+        let mut conn = establish_connection();
         let mut v: Vec<UserReply> = Vec::new();
 
-        for row in &conn.query("SELECT * FROM users", &[]).unwrap() {
-            let date_of_birth: NaiveDate = row.get(3);
+        for row in conn.query("SELECT * FROM users", &[]).unwrap() {
+            let date_of_birth: String = row.get(3);
             let user = UserReply {
-                id:            row.get(0),
-                first_name:    row.get(1),
-                last_name:     row.get(2),
-                date_of_birth: date_of_birth.to_string(),
+                id: row.get(0),
+                first_name: row.get(1),
+                last_name: row.get(2),
+                date_of_birth,
             };
             v.push(user);
         }
@@ -70,28 +74,23 @@ impl UserService for User {
         request: Request<CreateUserRequest>,
     ) -> Result<Response<CreateUserReply>, Status> {
         println!("Got a request: {:#?}", &request);
-        let user_id = Uuid::new_v4().to_hyphenated().to_string();
+        let user_id = Uuid::new_v4().hyphenated().to_string();
         let CreateUserRequest {
             first_name,
             last_name,
             date_of_birth,
         } = &request.into_inner();
-        let serialize_date_of_birth =
-            NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap();
+        let serialize_date_of_birth = date_of_birth.clone();
 
-        let conn = establish_connection();
-        let number_of_rows_affected = &conn.execute(
+        let mut conn = establish_connection();
+        let number_of_rows_affected = conn
+            .execute(
                 "INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ($1, $2, $3, $4)",
-                &[
-                    &user_id,
-                    &first_name,
-                    &last_name,
-                    &serialize_date_of_birth,
-                ]
+                &[&user_id, &first_name, &last_name, &serialize_date_of_birth],
             )
             .unwrap();
 
-        let reply = if number_of_rows_affected == &(0 as u64) {
+        let reply = if number_of_rows_affected == 0 {
             CreateUserReply {
                 message: format!("Fail to create user with id {}.", &user_id),
             }
@@ -119,24 +118,18 @@ impl UserService for User {
             date_of_birth,
         } = &request.into_inner();
 
-        let serialize_date_of_birth =
-            NaiveDate::parse_from_str(date_of_birth, "%Y-%m-%d").unwrap(); // String to Date
+        let serialize_date_of_birth = date_of_birth.clone();
 
-        let conn = establish_connection();
+        let mut conn = establish_connection();
 
-        let number_of_rows_affected = &conn
+        let number_of_rows_affected = conn
             .execute(
                 "UPDATE users SET first_name = $2, last_name = $3, date_of_birth = $4 WHERE id = $1",
-                &[
-                    &id,
-                    &first_name,
-                    &last_name,
-                    &serialize_date_of_birth,
-                ]
+                &[&id, &first_name, &last_name, &serialize_date_of_birth],
             )
             .unwrap();
 
-        let reply = if number_of_rows_affected == &(0 as u64) {
+        let reply = if number_of_rows_affected == 0 {
             UpdateUserReply {
                 message: format!("Fail to update the user with id {}.", id),
             }
@@ -160,13 +153,13 @@ impl UserService for User {
         let UserRequest {
             id,
         } = &request.into_inner();
-        let conn = establish_connection();
+        let mut conn = establish_connection();
 
-        let number_of_rows_affected = &conn
+        let number_of_rows_affected = conn
             .execute("DELETE FROM users WHERE id = $1", &[&id])
             .unwrap();
 
-        let reply = if number_of_rows_affected == &(0 as u64) {
+        let reply = if number_of_rows_affected == 0 {
             DeleteUserReply {
                 message: format!("Fail to delete the user with id {}.", id),
             }
@@ -184,14 +177,15 @@ impl UserService for User {
         request: Request<Empty>,
     ) -> Result<Response<DeleteUserReply>, Status> {
         println!("Got a request: {:#?}", &request);
-        let conn = establish_connection();
+        let mut conn = establish_connection();
 
-        let rows = &conn.query("DELETE FROM users", &[]).unwrap();
+        let number_of_rows_affected =
+            conn.execute("DELETE FROM users", &[]).unwrap();
 
         let reply = DeleteUserReply {
             message: format!(
                 "Remove {} user data from the database.",
-                rows.len()
+                number_of_rows_affected
             ),
         };
 

@@ -3,16 +3,21 @@
 ## DDL for `user`
 
 ```sql
+-- Enable the uuid-ossp extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create the users table
 CREATE TABLE users (
-    id VARCHAR(255) PRIMARY KEY DEFAULT uuid_generate_v4 (),
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     first_name VARCHAR(60) NOT NULL,
     last_name VARCHAR(60) NOT NULL,
-    date_of_birth Date NOT NULL
+    date_of_birth DATE NOT NULL
 );
 
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('1', '1', '1', '2025-01-01');
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('2', '2', '2', '2025-01-25');
-INSERT INTO users (id, first_name, last_name, date_of_birth) VALUES ('3', '3', '3', '2025-01-26');
+-- Insert data into the users table
+INSERT INTO users (first_name, last_name, date_of_birth) VALUES ('Carly', 'Hickman', '2025-01-01');
+INSERT INTO users (first_name, last_name, date_of_birth) VALUES ('Jakobe', 'Savage', '2025-01-25');
+INSERT INTO users (first_name, last_name, date_of_birth) VALUES ('Louise', 'Spence', '2025-01-26');
 ```
 
 ## References
