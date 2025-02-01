@@ -1,11 +1,10 @@
-use my_book_store::book_store_client::BookStoreClient;
-use my_book_store::GetBookRequest;
 use serde::Serialize;
 use warp::Filter;
 
-pub mod my_book_store {
-    tonic::include_proto!("bookstore");
-}
+mod my_book_store;
+use my_book_store::book_store_client::BookStoreClient;
+use my_book_store::GetBookRequest;
+
 
 #[derive(Serialize)]
 struct BookResponse {

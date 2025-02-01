@@ -26,3 +26,7 @@ cargo run --bin server
 ```bash
 cargo run --bin client
 ```
+
+## How to use with web browser
+
+- `http://localhost:3030/book/1`

@@ -1,11 +1,9 @@
-use my_book_store::book_store_server::{BookStore, BookStoreServer};
-use my_book_store::{GetBookRequest, GetBookResponse};
 use tonic::transport::Server;
 use tonic::{Request, Response, Status};
 
-pub mod my_book_store {
-    tonic::include_proto!("bookstore");
-}
+mod my_book_store;
+use my_book_store::book_store_server::{BookStore, BookStoreServer};
+use my_book_store::{GetBookRequest, GetBookResponse};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
