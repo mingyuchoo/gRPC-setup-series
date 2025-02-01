@@ -1,20 +1,20 @@
 [package]
-name = "greet-with-tonic"
-version = "0.1.0"
-edition = "2021"
+  edition = "2021"
+  name    = "greet-with-tonic"
+  version = "0.1.0"
 
 [[bin]] # Bin to run the Hello gRPC server
-name = "server"
-path = "src/server.rs"
+  name = "server"
+  path = "src/server.rs"
 
 [[bin]] # Bin to run the Hello gRPC client
-name = "client"
-path = "src/client.rs"
+  name = "client"
+  path = "src/client.rs"
 
 [dependencies]
-tonic = "0.8"
-prost = "0.11"
-tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
+  prost = "0.13"
+  tokio = {version = "1.43", features = ["macros", "rt-multi-thread"]}
+  tonic = "0.12"
 
 [build-dependencies]
-tonic-build = "0.8"
+  tonic-build = "0.12"
