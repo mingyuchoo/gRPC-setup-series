@@ -1,0 +1,14 @@
+syntax = "proto3";
+package Protocol.ProtoBuf;
+
+service HelloService {
+	rpc SayHello(HelloReq) returns (HelloRes);
+}
+
+message HelloReq {
+	string Greeting = 1;
+}
+
+message HelloRes {
+	string Reply = 1;
+}
