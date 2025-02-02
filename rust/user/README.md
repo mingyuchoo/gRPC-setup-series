@@ -20,6 +20,28 @@ INSERT INTO users (first_name, last_name, date_of_birth) VALUES ('Jakobe', 'Sava
 INSERT INTO users (first_name, last_name, date_of_birth) VALUES ('Louise', 'Spence', '2025-01-26');
 ```
 
+## How to build this project
+
+```bash
+$ cargo build
+```
+
+## How to run server
+
+```bash
+$ cargo run --bin server
+```
+
+## How to run client
+
+```bash
+$ cargo run --bin client
+```
+
+## How to check the result on web browser
+
+- `http://localhost:4000/user/list`
+
 ## References
 
 - <https://dev.to/steadylearner/how-to-use-grpc-with-rust-tonic-and-postgres-database-with-examples-3dl7>
