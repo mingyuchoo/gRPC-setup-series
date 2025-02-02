@@ -1,9 +1,9 @@
 use tonic::transport::Server;
 use tonic::{Request, Response, Status};
 
-mod my_book_store;
-use my_book_store::book_store_server::{BookStore, BookStoreServer};
-use my_book_store::{GetBookRequest, GetBookResponse};
+mod proto_bookstore;
+use proto_bookstore::book_store_server::{BookStore, BookStoreServer};
+use proto_bookstore::{GetBookRequest, GetBookResponse};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,7 +31,7 @@ impl BookStore for MyBookStore {
     ) -> Result<Response<GetBookResponse>, Status> {
         println!("Request from: {:?}", request.remote_addr());
 
-        let response = my_book_store::GetBookResponse {
+        let response = proto_bookstore::GetBookResponse {
             id:     request.into_inner().id,
             author: "Peter".to_owned(),
             name:   "Zero to One".to_owned(),

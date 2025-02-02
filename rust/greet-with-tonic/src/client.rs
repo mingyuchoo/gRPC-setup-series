@@ -1,6 +1,6 @@
-mod hello_world;
-use hello_world::greeting_client::GreetingClient;
-use hello_world::HelloRequest;
+mod proto_greeter;
+use proto_greeter::greeting_client::GreetingClient;
+use proto_greeter::HelloRequest;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -1,9 +1,9 @@
 use serde::Serialize;
 use warp::Filter;
 
-mod my_book_store;
-use my_book_store::book_store_client::BookStoreClient;
-use my_book_store::GetBookRequest;
+mod proto_bookstore;
+use proto_bookstore::book_store_client::BookStoreClient;
+use proto_bookstore::GetBookRequest;
 
 
 #[derive(Serialize)]

@@ -1,9 +1,9 @@
 use tonic::transport::Server;
 use tonic::{Request, Response, Status};
 
-mod hello_world;
-use hello_world::greeting_server::{Greeting, GreetingServer};
-use hello_world::{HelloRequest, HelloResponse};
+mod proto_greeter;
+use proto_greeter::greeting_server::{Greeting, GreetingServer};
+use proto_greeter::{HelloRequest, HelloResponse};
 
 #[derive(Debug, Default)]
 pub struct MyGreeting {}
@@ -16,7 +16,7 @@ impl Greeting for MyGreeting {
     ) -> Result<Response<HelloResponse>, Status> {
         println!("Got a request: {:?}", request);
 
-        let response = hello_world::HelloResponse {
+        let response = proto_greeter::HelloResponse {
             message: format!("Hello {}!", request.into_inner().name),
         };
 
