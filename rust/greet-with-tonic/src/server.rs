@@ -5,8 +5,17 @@ mod proto_greeter;
 use proto_greeter::greeting_server::{Greeting, GreetingServer};
 use proto_greeter::{HelloRequest, HelloResponse};
 
-#[derive(Debug, Default)]
-pub struct MyGreeting {}
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = "[::1]:50051".parse()?;
+    let greeter = MyGreeting::default();
+
+    Server::builder()
+        .add_service(GreetingServer::new(greeter))
+        .serve(addr)
+        .await?;
+    Ok(())
+}
 
 #[tonic::async_trait]
 impl Greeting for MyGreeting {
@@ -24,14 +33,5 @@ impl Greeting for MyGreeting {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse()?;
-    let greeter = MyGreeting::default();
-
-    Server::builder()
-        .add_service(GreetingServer::new(greeter))
-        .serve(addr)
-        .await?;
-    Ok(())
-}
+#[derive(Debug, Default)]
+pub struct MyGreeting {}
